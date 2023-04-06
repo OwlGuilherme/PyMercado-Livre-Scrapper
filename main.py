@@ -4,13 +4,6 @@ import json
 jsonFile = 'produtos.json'
 
 
-def formata_preço(preço: str) -> str:
-    span_preço = preço.split()
-    reais = int(span_preço[0])
-    centavos = int(span_preço[3])
-    return f'R$ {reais},{centavos:02d}'
-
-
 with sync_playwright() as sync_p:
     browser = sync_p.firefox.launch()
     page = browser.new_page()
@@ -34,17 +27,20 @@ with sync_playwright() as sync_p:
     # Verifica se houve alteração no preço do produto
     if produto_cadastrado:
         page.goto(url)
-        elemento_preço = page.query_selector('span.andes-visually-hidden')
-        preço_atual = elemento_preço.inner_text()
-        preço_atual_formatado = formata_preço(preço_atual)
+        span_reais = page.query_selector('span.andes-money-amount__fraction')
+        span_centavos = page.query_selector(
+            'span.andes-money-amount__cents andes-money-amount__cents--superscript-36')
+        reais = span_reais.inner_text()
+        centavos = span_centavos.inner_text()
+        preço_atual = f'R$ {reais},{centavos}'
 
-        if preço_atual_formatado != produto_cadastrado['preco']:
+        if preço_atual != produto_cadastrado['preco']:
             # Atualiza o preço do produto
-            produto_cadastrado['preco'] = preço_atual_formatado
+            produto_cadastrado['preco'] = preço_atual
             with open(jsonFile, 'w') as f:
                 json.dump(produtos, f)
                 print(f'''Houve mudança no produto: {produto_cadastrado}
-                      Preço atual: {preço_atual_formatado}''')
+                      Preço atual: {preço_atual}''')
 
         else:
             print('Não houve alteração no preço do produto')
@@ -52,19 +48,22 @@ with sync_playwright() as sync_p:
     else:
         # Produto novo
         page.goto(url)
-        elemento_preço = page.query_selector('span.andes-visually-hidden')
-        preço = elemento_preço.inner_text()
-        preço_formatdo = formata_preço(preço)
+        span_reais = page.query_selector('span.andes-money-amount__fraction')
+        span_centavos = page.query_selector(
+            'span.andes-money-amount__cents--superscript-36'
+        )
+        reais = span_reais.inner_text()
+        centavos = span_centavos.inner_text()
+        preço_atual = f'R$ {reais},{centavos}'
 
         elemento_nome = page.query_selector('h1.ui-pdp-title')
         nome = elemento_nome.inner_text().strip()
 
-        produto_novo = {'url': url, 'nome': nome, 'preco': preço_formatdo}
+        produto_novo = {'url': url, 'nome': nome, 'preco': preço_atual}
         produtos.append(produto_novo)
 
         with open(jsonFile, 'w') as f:
             json.dump(produtos, f)
-            print(f'''Produto adicionado com sucesso!!!
-                  Nome: {produto_novo}''')
+            print('Produto adicionado com sucesso!!!')
 
-    browser.clone()
+    browser.close()
