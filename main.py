@@ -27,20 +27,15 @@ with sync_playwright() as sync_p:
     # Verifica se houve alteração no preço do produto
     if produto_cadastrado:
         page.goto(url)
-        span_reais = page.query_selector('span.andes-money-amount__fraction')
-        span_centavos = page.query_selector(
-            'span.andes-money-amount__cents andes-money-amount__cents--superscript-36')
-        reais = span_reais.inner_text()
-        centavos = span_centavos.inner_text()
-        preço_atual = f'R$ {reais},{centavos}'
+        elemento_preço = page.query_selector('meta[itemprop="price"]')
+        preço_atual = f"R$ {elemento_preço.get_attribute('content')}"
 
         if preço_atual != produto_cadastrado['preco']:
             # Atualiza o preço do produto
             produto_cadastrado['preco'] = preço_atual
             with open(jsonFile, 'w') as f:
                 json.dump(produtos, f)
-                print(f'''Houve mudança no produto: {produto_cadastrado}
-                      Preço atual: {preço_atual}''')
+                print('Atualização do preço realizada com sucesso!!!')
 
         else:
             print('Não houve alteração no preço do produto')
@@ -48,13 +43,9 @@ with sync_playwright() as sync_p:
     else:
         # Produto novo
         page.goto(url)
-        span_reais = page.query_selector('span.andes-money-amount__fraction')
-        span_centavos = page.query_selector(
-            'span.andes-money-amount__cents--superscript-36'
-        )
-        reais = span_reais.inner_text()
-        centavos = span_centavos.inner_text()
-        preço_atual = f'R$ {reais},{centavos}'
+
+        elemento_preço = page.query_selector('meta[itemprop="price"]')
+        preço_atual = f"R$ {elemento_preço.get_attribute('content')}"
 
         elemento_nome = page.query_selector('h1.ui-pdp-title')
         nome = elemento_nome.inner_text().strip()
