@@ -9,11 +9,8 @@ jsonFile = 'produtos.json'
 conn = sqlite3.connect('precos.db')
 cursor = conn.cursor()
 
-cursor.execute('''CREATE TABLE IF NOT EXISTS precos (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    horario TIMESTAMP,
-                    preco FLOAT
-                    )''')
+conn.execute('''CREATE TABLE IF NOT EXISTS precos
+                (produto TEXT, horario TIMESTAMP, preco REAL)''')
 
 
 with sync_playwright() as sync_p:
@@ -70,3 +67,6 @@ with sync_playwright() as sync_p:
             print('Produto adicionado com sucesso!!!')
 
     browser.close()
+
+conn.close()
+
