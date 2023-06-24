@@ -12,6 +12,12 @@ cursor = conn.cursor()
 conn.execute('''CREATE TABLE IF NOT EXISTS precos
                 (produto TEXT, horario TIMESTAMP, preco REAL)''')
 
+def save_to_DB(produto, preco):
+    conn = sqlite3.connect('precos.db')
+    horario = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    conn.execute('INSERT INTO precos VALUES (?, ?, ?)', (produto, horario, preco))
+    conn.commit()
+    conn.close()
 
 with sync_playwright() as sync_p:
     browser = sync_p.firefox.launch()
