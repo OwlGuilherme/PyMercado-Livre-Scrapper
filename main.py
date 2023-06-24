@@ -1,7 +1,19 @@
 from playwright.sync_api import Playwright, sync_playwright
 import json
+import sqlite3
+import datetime
+
 
 jsonFile = 'produtos.json'
+
+conn = sqlite3.connect('precos.db')
+cursor = conn.cursor()
+
+cursor.execute('''CREATE TABLE IF NOT EXISTS precos (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    horario TIMESTAMP,
+                    preco FLOAT
+                    )''')
 
 
 with sync_playwright() as sync_p:
