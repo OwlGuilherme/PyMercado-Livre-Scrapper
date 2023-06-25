@@ -43,8 +43,8 @@ playwright install
 ```
 python3 main.py
 ```
-+ Com a aplicação rodando no terminal, insira o link do produto que deseja rapas
-+ Após pressionar Enter, a aplicação irá salvar os dados no produto e encerrar a execução.
++ Com a aplicação rodando no terminal, insira o link do produto que deseja rapar
++ Após pressionar Enter, a aplicação irá salvar os dados no produto e plotar um gráfico com os preços.
 
 ## 📮 Contribuindo com o PyMercado-Livre-Scrapper
 
