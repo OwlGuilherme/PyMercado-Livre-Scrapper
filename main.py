@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import sqlite3
 import datetime
 
-# Função para salvar dados no banco de dados
+
 def save_to_DB(nome, preço_atual):
     conn = sqlite3.connect('banco.db')
     horario = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
@@ -11,7 +11,6 @@ def save_to_DB(nome, preço_atual):
     conn.commit()
     conn.close()
 
-# Função para obter os dados do banco de dados
 def obter_dados():
     conn = sqlite3.connect('banco.db')
     cursor = conn.cursor()
@@ -32,7 +31,7 @@ with sync_playwright() as sync_p:
     page = browser.new_page()
 
     url = input('Digite o link do produto: ')
-
+    
     page.goto(url)
 
     elemento_preço = page.query_selector('meta[itemprop="price"]')
@@ -44,14 +43,24 @@ with sync_playwright() as sync_p:
     save_to_DB(nome, preço_atual)
 
 dados = obter_dados()
-produtos, horarios, precos = zip(*dados)
-horarios = [datetime.datetime.strptime(h, '%Y-%m-%d %H:%M:%S') for h in horarios]
+dados_por_produto = {}
 
-# Plotar o gráfico
-plt.plot(horarios, precos, marker='o')
-plt.xlabel('Horário')
-plt.ylabel('Preço')
-plt.title('Variação de Preços')
+for dado in dados:
+    produto, horario, preco = dado
+    if produto not in dados_por_produto:
+        dados_por_produto[produto] = {'horarios': [], 'precos': []}
+    dados_por_produto[produto]['horarios'].append(horario)
+    dados_por_produto[produto]['precos'].append(preco)
+
+for produto, dados_produto in dados_por_produto.items():
+    horarios = dados_produto['horarios']
+    precos = dados_produto['precos']
+    plt.plot(horarios, precos, marker='o', label=produto)
+
+plt.xlabel('Horario')
+plt.xlabel('Preço')
+plt.title('Variações de preços')
+plt.legend()
 plt.xticks(rotation=45)
 plt.show()
 
