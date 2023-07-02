@@ -1,6 +1,6 @@
 # PyMercado-Livre-Scrapper
 
-> Status: Em desenvolvimento. ⚠️
+> Status: A aplica está em desenvolvimento, mas já é funcional. ⚠️
 
 Script em python para WebScrapping de preços de produtos no site Mercado Livre
 Utiliza-se a biblioteca [PlayWright](https://playwright.dev/python/) para controlar as automações.
