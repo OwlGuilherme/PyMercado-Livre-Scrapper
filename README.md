@@ -4,8 +4,8 @@
 
 Script em python para WebScrapping de preços de produtos no site Mercado Livre
 Utiliza-se a biblioteca [PlayWright](https://playwright.dev/python/) para controlar as automações.
-A aplicação recebe do usuário o link do produto, raspa seu preço e nome e salva em um arquivo json.
-Caso o produto já esteja salvo, ele verifica se houve alteração no preço, caso haja, salva o novo preço.
+A aplicação recebe do usuário o link do produto, raspa seu preço e nome eem um banco de dados.
+É possível acompanhar a mudança de preços por meio de um gráfico.
 
 ## 💻 Pré-requisitos
 
@@ -43,7 +43,7 @@ playwright install
 ```
 python3 main.py
 ```
-+ Com a aplicação rodando no terminal, insira o link do produto que deseja rapar
++ Com a aplicação rodando no terminal, insira o link do produto que deseja raspar
 + Após pressionar Enter, a aplicação irá salvar os dados no produto e plotar um gráfico com os preços.
 
 ## 📮 Contribuindo com o PyMercado-Livre-Scrapper
